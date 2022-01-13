@@ -6,9 +6,13 @@ import django.db.models.deletion
 
 from board.models import Article, Board
 
-
-
-
+def gen_data(app, schema_editor):
+    board = Board(name="공지사항")
+    board.save()
+    for id in range(1, 20):
+        subject = f"안녕하세요{id}"
+        content = f"좋은 아침입니다.{id}"
+        Article(board_id=board.id, user_id=1, subject=subject, content=content).save()
 
 class Migration(migrations.Migration):
 
@@ -31,5 +35,5 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
-
+        migrations.RunPython(gen_data),
     ]

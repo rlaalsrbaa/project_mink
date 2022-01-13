@@ -137,3 +137,8 @@ INTERNAL_IPS = [
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'base/static',
+]
+STATIC_ROOT = BASE_DIR / 'static'
