@@ -2,13 +2,7 @@
 
 from django.db import migrations, models
 
-from board.models import Board
-
-
-def gen_data(app, schema_editor):
-    Board(name="공지사항").save()
-    Board(name="문의").save()
-    Board(name="이벤트").save()
+from board.models import Board, Article
 
 class Migration(migrations.Migration):
 
@@ -27,5 +21,4 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100, verbose_name='상품명(내부용)')),
             ],
         ),
-        migrations.RunPython(gen_data),
     ]
