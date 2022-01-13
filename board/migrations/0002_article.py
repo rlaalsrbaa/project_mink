@@ -6,6 +6,7 @@ import django.db.models.deletion
 
 from board.models import Article, Board
 
+
 def gen_data(app, schema_editor):
     board = Board(name="공지사항")
     board.save()
@@ -13,9 +14,13 @@ def gen_data(app, schema_editor):
         subject = f"안녕하세요{id}"
         content = f"좋은 아침입니다.{id}"
         Article(board_id=board.id, user_id=1, subject=subject, content=content).save()
+    for id in range(1, 20):
+        subject = f"다들 점심은 드셨나요?{id}"
+        content = f"맛있게 먹었습니다..{id}"
+        Article(board_id=board.id, user_id=1, subject=subject, content=content).save()
+
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('board', '0001_initial'),
