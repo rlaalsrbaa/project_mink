@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     # Local App
     'accounts.apps.AccountsConfig',
+    'board.apps.BoardConfig',
+    'article.apps.ArticleConfig',
 ]
 
 MIDDLEWARE = [
