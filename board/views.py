@@ -13,16 +13,16 @@ def notice(request: HttpRequest):
     return article_list(request, board)
 
 def article_list(request: HttpRequest, board):
-    kw = request.GET.get('kw', default='')
-    article_list = Article.objects.filter(board=board.id).order_by('-id')
-    article_list = article_list.filter(
-        Q(subject__icontains=kw)  # 상품명검색
-    ).distinct()
-
+    kw = request.GET.get('kw', '')
     page = request.GET.get('page', '1')  # 페이지
+
+    if not kw:
+        article_list = Article.objects.filter(board=board.id).order_by('-id')
+    else:
+        article_list = Article.objects.filter(board=board.id,subject__icontains=kw).order_by('-id')
+
     paginator = Paginator(article_list, 10)  # 페이지당 10개씩 보여주기
     page_obj = paginator.get_page(page)
-
 
     context = {'article_list': page_obj}
     return render(request, 'board/list.html', context)

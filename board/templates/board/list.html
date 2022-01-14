@@ -3,27 +3,24 @@
 {%block content%}
 
 <div class="container-lg" style="margin-top:100px;">
-       <div class="row justify-content-end my-3">
-        <div class="col-4 input-group">
-            <input type="text" class="form-control kw" value="{{ kw|default_if_none:'' }}">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
-            </div>
-        </div>
-    </div>
-    <ul>
+    <form class="d-flex" action="{% url 'board:notice'%}">
+        <input class="form-control me-2" type="search" name="kw" placeholder="검색어를 입력해주세요."
+               aria-label="Search"
+               value="{{request.GET.kw}}">
+        <button class="btn btn-outline-success" type="submit">검색</button>
+    </form>
+    <ul style="margin-top:50px;">
         {% for article in article_list%}
         <li>
             <a href="{% url 'board:detail' article.id %}">{{ article.subject }}</a>
         </li>
         {%endfor%}
     </ul>
-    <!-- 페이징처리 시작 -->
     <ul class="pagination justify-content-center" style="margin-top:50px;">
         <!-- 이전페이지 -->
         {% if article_list.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ article_list.previous_page_number }}">이전</a>
+            <a class="page-link" href="?page={{ article_list.previous_page_number }}&kw={{request.GET.kw}}">이전</a>
         </li>
         {% else %}
         <li class="page-item disabled">
@@ -32,20 +29,22 @@
         {% endif %}
         <!-- 페이지리스트 -->
         {% for page_number in article_list.paginator.page_range %}
+        {% if article_list.number|add:-5 <= page_number <= article_list.number|add:5 %}
         {% if page_number == article_list.number %}
         <li class="page-item active" aria-current="page">
-            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            <a class="page-link" href="?page={{ page_number }}&kw={{request.GET.kw}}">{{ page_number }}</a>
         </li>
         {% else %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            <a class="page-link" href="?page={{ page_number }}&kw={{request.GET.kw}}">{{ page_number }}</a>
         </li>
+        {% endif %}
         {% endif %}
         {% endfor %}
         <!-- 다음페이지 -->
         {% if article_list.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ article_list.next_page_number }}">다음</a>
+            <a class="page-link" href="?page={{ article_list.next_page_number }}&kw={{request.GET.kw}}">다음</a>
         </li>
         {% else %}
         <li class="page-item disabled">
@@ -53,10 +52,5 @@
         </li>
         {% endif %}
     </ul>
-    <!-- 페이징처리 끝 -->
 </div>
-<form id="searchForm" method="get">
-    <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
-    <input type="hidden" id="page" name="page" value="{{ page }}">
-</form>
 {%endblock%}
