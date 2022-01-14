@@ -13,15 +13,8 @@
     <link rel="stylesheet" href="{% static 'common.css' %}">
     <script defer src="{% static 'common.js' %}"></script>
 </head>
-
 <body>
 <header>
-    <!-- Fixed navbar -->
-    <nav class="container fs-1" style="margin-bottom:50px;">
-        <a href="/">밍크</a>
-        <a href="{% url 'board:notice'%}">공지사항</a>
-    </nav>
-
 </header>
 
 {%block content%}
