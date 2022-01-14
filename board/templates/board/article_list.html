@@ -1,18 +1,19 @@
 {% extends "layout.html" %}
 
 {%block content%}
-<nav class="container fs-1" style="margin-bottom:50px;">
-    <a href="/">밍크</a>
-    <a href="{% url 'board:notice'%}">공지사항</a>
-    <a href="{% url 'accounts:login'%}">로그인</a>
-</nav>
 <div class="container-lg">
-    <form class="d-flex" action="{% url 'board:notice'%}">
-        <input class="form-control me-2" type="search" name="kw" placeholder="검색어를 입력해주세요."
-               aria-label="Search"
-               value="{{request.GET.kw}}">
-        <button class="btn btn-outline-success" type="submit">검색</button>
-    </form>
+    <div class="input-group" style="margin-top:30px;">
+        <div class="form-outline">
+            <form class="d-flex" action="{% url 'board:notice'%}">
+                <input class="form-control me-2" type="search" name="kw" placeholder="검색어를 입력해주세요."
+                       aria-label="Search"
+                       value="{{request.GET.kw}}">
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
     <ul style="margin-top:20px;">
         {% for article in article_list%}
         <li>
@@ -21,7 +22,7 @@
         {%endfor%}
     </ul>
     <div>
-        <a href="{% url 'board:write' board.id%}" class="btn btn-primary">질문 작성</a>
+        <a href="{% url 'board:write' board.id%}" class="btn btn-primary" style="margin-top:30px;">글 작성</a>
     </div>
     <ul class="pagination justify-content-center" style="margin-top:50px;">
         <!-- 이전페이지 -->

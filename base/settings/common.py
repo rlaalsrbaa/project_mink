@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 서드파티
     'debug_toolbar',
+    'django_bootstrap5',
+
     # Local App
     'accounts.apps.AccountsConfig',
     'board.apps.BoardConfig',
@@ -142,3 +144,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'base/static',
 ]
 STATIC_ROOT = BASE_DIR / 'static'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = 'accounts:login'
+
+
