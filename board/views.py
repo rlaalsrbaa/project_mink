@@ -2,8 +2,8 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect
+from .forms import ArticleForm
 from board.models import Board, Article
 
 
@@ -24,8 +24,28 @@ def article_list(request: HttpRequest, board):
     paginator = Paginator(article_list, 10)  # 페이지당 10개씩 보여주기
     page_obj = paginator.get_page(page)
 
-    context = {'article_list': page_obj}
-    return render(request, 'board/list.html', context)
+    context = {'article_list': page_obj,
+               'board': board,
+               }
+    return render(request, 'board/article_list.html', context)
 
 def article_detail(request: HttpRequest, article_id):
-    return render(request, 'board/detail.html',)
+    return render(request, 'board/article_detail.html',)
+
+
+def article_write(request: HttpRequest, board_id):
+    board = Board.objects.get(id=board_id)
+    returnUrl = f"board/{board.id}"
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.board_id = board.id
+            article.user_id = request.user.id
+            article.save()
+            return redirect(returnUrl)
+    else:
+        form = ArticleForm()
+    context = {'form': form,
+               'board': board}
+    return render(request, 'board/article_form.html', context)

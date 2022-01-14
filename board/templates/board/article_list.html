@@ -2,20 +2,23 @@
 
 {%block content%}
 
-<div class="container-lg" style="margin-top:100px;">
+<div class="container-lg">
     <form class="d-flex" action="{% url 'board:notice'%}">
         <input class="form-control me-2" type="search" name="kw" placeholder="검색어를 입력해주세요."
                aria-label="Search"
                value="{{request.GET.kw}}">
         <button class="btn btn-outline-success" type="submit">검색</button>
     </form>
-    <ul style="margin-top:50px;">
+    <ul style="margin-top:20px;">
         {% for article in article_list%}
         <li>
             <a href="{% url 'board:detail' article.id %}">{{ article.subject }}</a>
         </li>
         {%endfor%}
     </ul>
+    <div>
+        <a href="{% url 'board:write' board.id%}" class="btn btn-primary">질문 작성</a>
+    </div>
     <ul class="pagination justify-content-center" style="margin-top:50px;">
         <!-- 이전페이지 -->
         {% if article_list.has_previous %}

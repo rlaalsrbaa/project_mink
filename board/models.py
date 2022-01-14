@@ -7,6 +7,9 @@ class Board(models.Model):
     reg_date = models.DateTimeField('등록날짜', auto_now_add=True)
     name = models.CharField('상품명(내부용)', max_length=100)
 
+    def __str__(self):
+        return self.name
+
 class Article(models.Model):
     reg_date = models.DateTimeField('등록날짜', auto_now_add=True)
     update_date = models.DateTimeField('수정날짜', auto_now=True)
@@ -15,3 +18,6 @@ class Article(models.Model):
     subject = models.CharField('제목', max_length=100)
     content = models.TextField('내용')
     is_blind = models.BooleanField('공개 여부', default=False)
+
+    def __str__(self):
+        return self.subject
