@@ -1,8 +1,8 @@
 # Create your views here.
+from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ArticleForm
 from board.models import Board, Article
 
@@ -34,18 +34,52 @@ def article_detail(request: HttpRequest, article_id):
 
 
 def article_write(request: HttpRequest, board_id):
-    board = Board.objects.get(id=board_id)
-    returnUrl = f"board/{board.id}"
-    if request.method == 'POST':
-        form = ArticleForm(request.POST)
-        if form.is_valid():
-            article = form.save(commit=False)
-            article.board_id = board.id
-            article.user_id = request.user.id
-            article.save()
-            return redirect(returnUrl)
+    if request.user.is_authenticated:
+        board = Board.objects.get(id=board_id)
+        returnUrl = f"/board/{board.id}"
+        if request.method == 'POST':
+            form = ArticleForm(request.POST)
+            if form.is_valid():
+                article = form.save(commit=False)
+                article.board_id = board.id
+                article.user_id = request.user.id
+                article.save()
+                return redirect(returnUrl)
+        else:
+            form = ArticleForm()
+        context = {'form': form,
+                   'board': board}
+        return render(request, 'board/article_form.html', context)
     else:
-        form = ArticleForm()
-    context = {'form': form,
-               'board': board}
-    return render(request, 'board/article_form.html', context)
+        return redirect('accounts:login')
+
+def article_modify(request: HttpRequest, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    board_id = article.board_id
+    board = get_object_or_404(Board, id=board_id)
+    if request.user.id == article.user_id:
+        if request.method == "POST":
+            form = ArticleForm(request.POST, instance=article)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "질문이 수정되었습니다.")
+                return redirect(f"/board/{board_id}")
+        else:
+            form = ArticleForm(None, instance=article)
+
+        return render(request, "board/article_form.html", {
+            "form": form,
+            "board": board,
+        })
+    else:
+        return redirect('index')
+def article_delete(request: HttpRequest, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    if request.user.id == article.user_id:
+        board_id = article.board_id
+        article.delete()
+        messages.success(request, "질문이 삭제되었습니다.")
+
+        return redirect(f"/board/{board_id}")
+    else:
+        return redirect('index')

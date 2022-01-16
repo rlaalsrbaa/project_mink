@@ -10,6 +10,7 @@ class Board(models.Model):
     def __str__(self):
         return self.name
 
+
 class Article(models.Model):
     reg_date = models.DateTimeField('등록날짜', auto_now_add=True)
     update_date = models.DateTimeField('수정날짜', auto_now=True)
@@ -17,7 +18,9 @@ class Article(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     subject = models.CharField('제목', max_length=100)
     content = models.TextField('내용')
+    votes = models.IntegerField("추천수", default=0, )
     is_blind = models.BooleanField('공개 여부', default=False)
 
-    def __str__(self):
-        return self.subject
+
+def __str__(self):
+    return self.subject

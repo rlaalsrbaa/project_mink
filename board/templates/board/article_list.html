@@ -14,15 +14,34 @@
             </form>
         </div>
     </div>
-    <ul style="margin-top:20px;">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">번호</th>
+            <th scope="col">제목</th>
+            <th scope="col">글쓴이</th>
+            <th scope="col">추천수</th>
+            <th scope="col">날짜</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for article in article_list%}
-        <li>
-            <a href="{% url 'board:detail' article.id %}">{{ article.subject }}</a>
-        </li>
+        <tr>
+            <th scope="row"><a href="{% url 'board:detail' article.id %}">{{ article.id }}</a></th>
+            <td><a href="{% url 'board:detail' article.id %}">{{ article.subject }}</a></td>
+            <td><a href="{% url 'board:detail' article.id %}">{{ article.user.name }}</a></td>
+            <td><a href="{% url 'board:detail' article.id %}">{{ article.id }}</a></td>
+            <td><a href="{% url 'board:detail' article.id %}">{{ article.reg_date }}</a></td>
+            {% if request.user.id == article.user.id %}
+            <td><a href="{% url 'board:modify' article.id %}" class="btn btn-outline">수정</a></td>
+            <td><a href="{% url 'board:delete' article.id %}" class="btn btn-outline" onclick="if ( confirm('정말 삭제하시겠습니까?') == false ) return false">삭제</a></td>
+            {%endif%}
+        </tr>
         {%endfor%}
-    </ul>
+        </tbody>
+    </table>
     <div>
-        <a href="{% url 'board:write' board.id%}" class="btn btn-primary" style="margin-top:30px;">글 작성</a>
+        <a href=" {% url 'board:write' board.id%}" class="btn btn-primary" style="margin-top:30px;">글 작성</a>
     </div>
     <ul class="pagination justify-content-center" style="margin-top:50px;">
         <!-- 이전페이지 -->
