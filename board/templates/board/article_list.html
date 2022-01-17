@@ -30,7 +30,7 @@
             <th scope="row"><h6>{{ article.id }}</h6></th>
             <td><a href="{% url 'board:detail' article.board_id article.id %}">{{ article.subject }}</a></td>
             <td><a href="#">{{ article.user.username }}</a></td>
-            <td><h6>{{ article.votes }}</h6></td>
+            <td><h6></h6></td>
             <td><h6>{{ article.reg_date }}</h6></td>
             {% if request.user.id == article.user.id %}
             <td><a href="{% url 'board:modify' article.id %}" class="btn btn-outline-primary"

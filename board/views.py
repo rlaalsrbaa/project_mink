@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ArticleForm, CommentForm
-from board.models import Board, Article
+from board.models import Board, Article, Comment
 
 
 def notice(request: HttpRequest):
@@ -33,15 +33,17 @@ def article_list(request: HttpRequest, board):
 def article_detail(request: HttpRequest, board_id, article_id):
     article = get_object_or_404(Article, id=article_id)
     board = get_object_or_404(Board, id=article.board_id)
-
+    comment = Comment.objects.filter(article_id=article_id)
     context = {'article': article,
-               'board': board}
+               'board': board,
+               'comment': comment}
     return render(request, 'board/article_detail.html', context)
 
 def comment_write(request: HttpRequest, board_id, article_id):
-    board = Board.objects.get(id=board_id)
+    board = get_object_or_404(Board, id=board_id)
+    article = get_object_or_404(Article, id=article_id)
+
     if request.user.is_authenticated:
-        article = Article.objects.get(id=article_id)
         returnUrl = f"/board/{article.board_id}/article/{article.id}/"
         if request.method == 'POST':
             form = CommentForm(request.POST)
@@ -52,10 +54,11 @@ def comment_write(request: HttpRequest, board_id, article_id):
                 comment.save()
                 return redirect(returnUrl)
         else:
-            form = ArticleForm()
+            form = CommentForm()
         context = {'form': form,
                    'board': board,
-                   'article': article}
+                   'article': article,
+                   }
         return render(request, 'board/article_detail.html', context)
     else:
         return redirect('accounts:login')

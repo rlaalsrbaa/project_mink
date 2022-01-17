@@ -10,21 +10,43 @@
         </div>
         <div class="card-body text-center">
             <p class="card-text" style="text-align:left;">{{article.content}}</p>
-            <a href="#" class="btn btn-primary"><i class="far fa-thumbs-up"></i> {{article.votes}}</a>
+            <a href="#" class="btn btn-primary"><i class="far fa-thumbs-up"></i>0</a>
         </div>
         <div class="card-footer text-muted">
             {{article.reg_date}}
         </div>
     </div>
-    <div style="margin-top:30px;">전체 댓글 {{article.how_many_comment}}개</div>
-    <div class="border-top border-bottom">
-        <form method="post" class="post-form my-3" action="{% url 'board:comment_write' board.id article.id%}">
-            <div class="form-group" style="margin-top:0px;">
+    <div style="margin-top:30px;">전체 댓글
+        {% if article.comment_set.count > 0 %}
+        <span style="color:blue;">
+            {{ article.comment_set.count }}
+        </span>
+        {%else%}
+        0
+        {% endif %}개
+    </div>
+    <div class="container" style="margin-top:50px;">
+        {% for comment_ in comment %}
+        <div style="height:30px; text-align:left; background-color:gray;">
+            <p class="fs-6" style="line-height:30px;">{{ comment_.user.username }}{{ comment_.reg_date}}</p>
+
+        </div>
+        <div class="" style="height:100px;">
+            {{ comment_.content }}
+        </div>
+        {%endfor%}
+    </div>
+
+    <div>
+        <form method="post" action="{% url 'board:comment_write' board.id article.id%}">
+            {% csrf_token %}
+            <div class="form-group">
                 <label for="content"></label>
                 <textarea class="form-control" name="content"
-                          id="content" rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
+                          id="content" rows="4"
+                          placeholder="내용을 입력하세요.">{{ form.content.value|default_if_none:'' }}</textarea>
             </div>
-            <button type="submit" class="btn btn-primary">등록</button>
+            <button type="submit" class="btn btn-primary" style="margin-top:10px; margin-bottom:10px;">등록</button>
         </form>
     </div>
 </div>
