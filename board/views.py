@@ -1,6 +1,7 @@
 # Create your views here.
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ArticleForm
@@ -19,7 +20,7 @@ def article_list(request: HttpRequest, board):
     if not kw:
         article_list = Article.objects.filter(board=board.id).order_by('-id')
     else:
-        article_list = Article.objects.filter(board=board.id,subject__icontains=kw).order_by('-id')
+        article_list = Article.objects.filter(board=board.id,).filter(Q (subject__icontains=kw) | Q (content__icontains=kw)).order_by('-id')
 
     paginator = Paginator(article_list, 10)  # 페이지당 10개씩 보여주기
     page_obj = paginator.get_page(page)
@@ -30,7 +31,11 @@ def article_list(request: HttpRequest, board):
     return render(request, 'board/article_list.html', context)
 
 def article_detail(request: HttpRequest, article_id):
-    return render(request, 'board/article_detail.html',)
+    article = get_object_or_404(Article, id=article_id)
+    board = get_object_or_404(Board, id=article.board_id)
+    context = {'article': article,
+               'board': board}
+    return render(request, 'board/article_detail.html', context)
 
 
 def article_write(request: HttpRequest, board_id):

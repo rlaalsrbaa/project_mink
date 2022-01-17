@@ -4,7 +4,7 @@
 <div class="container-lg">
     <div class="input-group" style="margin-top:30px;">
         <div class="form-outline">
-            <form class="d-flex" action="{% url 'board:notice'%}">
+            <form class="d-flex">
                 <input class="form-control me-2" type="search" name="kw" placeholder="검색어를 입력해주세요."
                        aria-label="Search"
                        value="{{request.GET.kw}}">
@@ -14,7 +14,7 @@
             </form>
         </div>
     </div>
-    <table class="table">
+    <table class="table" style="margin-top:30px;">
         <thead>
         <tr>
             <th scope="col">번호</th>
@@ -27,14 +27,16 @@
         <tbody>
         {% for article in article_list%}
         <tr>
-            <th scope="row"><a href="{% url 'board:detail' article.id %}">{{ article.id }}</a></th>
+            <th scope="row"><h6>{{ article.id }}</h6></th>
             <td><a href="{% url 'board:detail' article.id %}">{{ article.subject }}</a></td>
-            <td><a href="{% url 'board:detail' article.id %}">{{ article.user.name }}</a></td>
-            <td><a href="{% url 'board:detail' article.id %}">{{ article.id }}</a></td>
-            <td><a href="{% url 'board:detail' article.id %}">{{ article.reg_date }}</a></td>
+            <td><a href="{% url 'board:detail' article.id %}">{{ article.user.username }}</a></td>
+            <td><h6>{{ article.votes }}</h6></td>
+            <td><h6>{{ article.reg_date }}</h6></td>
             {% if request.user.id == article.user.id %}
-            <td><a href="{% url 'board:modify' article.id %}" class="btn btn-outline">수정</a></td>
-            <td><a href="{% url 'board:delete' article.id %}" class="btn btn-outline" onclick="if ( confirm('정말 삭제하시겠습니까?') == false ) return false">삭제</a></td>
+            <td><a href="{% url 'board:modify' article.id %}" class="btn btn-outline-primary"
+                   style="margin-right:10px;">수정</a>
+                <a href="{% url 'board:delete' article.id %}" class="btn btn-warning"
+                   onclick="if ( confirm('정말 삭제하시겠습니까?') == false ) return false">삭제</a></td>
             {%endif%}
         </tr>
         {%endfor%}
