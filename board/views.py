@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ArticleForm
+from .forms import ArticleForm, CommentForm
 from board.models import Board, Article
 
 
@@ -30,13 +30,35 @@ def article_list(request: HttpRequest, board):
                }
     return render(request, 'board/article_list.html', context)
 
-def article_detail(request: HttpRequest, article_id):
+def article_detail(request: HttpRequest, board_id, article_id):
     article = get_object_or_404(Article, id=article_id)
     board = get_object_or_404(Board, id=article.board_id)
+
     context = {'article': article,
                'board': board}
     return render(request, 'board/article_detail.html', context)
 
+def comment_write(request: HttpRequest, board_id, article_id):
+    board = Board.objects.get(id=board_id)
+    if request.user.is_authenticated:
+        article = Article.objects.get(id=article_id)
+        returnUrl = f"/board/{article.board_id}/article/{article.id}/"
+        if request.method == 'POST':
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.article_id = article.id
+                comment.user_id = request.user.id
+                comment.save()
+                return redirect(returnUrl)
+        else:
+            form = ArticleForm()
+        context = {'form': form,
+                   'board': board,
+                   'article': article}
+        return render(request, 'board/article_detail.html', context)
+    else:
+        return redirect('accounts:login')
 
 def article_write(request: HttpRequest, board_id):
     if request.user.is_authenticated:

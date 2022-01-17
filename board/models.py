@@ -20,7 +20,15 @@ class Article(models.Model):
     content = models.TextField('내용')
     votes = models.IntegerField("추천수", default=0, )
     is_blind = models.BooleanField('공개 여부', default=False)
+    how_many_comment = models.IntegerField("댓글수", default=0)
 
+    def __str__(self):
+        return self.subject
 
-def __str__(self):
-    return self.subject
+class Comment(models.Model):
+    reg_date = models.DateTimeField('등록날짜', auto_now_add=True)
+    update_date = models.DateTimeField('수정날짜', auto_now=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField('내용')
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    is_modify = models.BooleanField('수정 가능 여부', default=False)
