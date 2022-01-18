@@ -25,6 +25,11 @@ class Article(models.Model):
     def __str__(self):
         return self.subject
 
+    @property
+    def like_count(self):
+        return self.like_user_set.count()
+
+
 class Comment(models.Model):
     reg_date = models.DateTimeField('등록날짜', auto_now_add=True)
     update_date = models.DateTimeField('수정날짜', auto_now=True)
