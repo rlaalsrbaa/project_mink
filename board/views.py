@@ -132,6 +132,7 @@ def comment_delete(request: HttpRequest, board_id, article_id, comment_id):
     messages.success(request, "댓글이 삭제되었습니다.")
     return redirect(f"/board/{board_id}/article/{article_id}/")
 
+
 @login_required
 @require_POST
 def article_like(request):
@@ -146,5 +147,5 @@ def article_like(request):
         article.voter.add(user)
         message = '좋아요'
 
-    context = {'likes_count': article.count_voter(), 'message': message}
+    context = {'likes_count':article.count_voter_user(), 'message': message}
     return HttpResponse(json.dumps(context), content_type="application/json")

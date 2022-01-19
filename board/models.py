@@ -21,6 +21,8 @@ class Article(models.Model):
     is_blind = models.BooleanField('공개 여부', default=False)
     voter = models.ManyToManyField(User, related_name='voter_article')
 
+    def count_voter_user(self):  # total likes_user
+        return self.voter.count()
 
     def __str__(self):
         return self.subject
